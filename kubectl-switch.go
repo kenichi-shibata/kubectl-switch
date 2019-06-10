@@ -175,5 +175,7 @@ func main() {
 	// TODO: make this into a cobra cmd line
 	// TODO: Make version() read from the json file
 	// TODO: Annotate this using godoc
+	// TODO: create a list commmand to show which versions are available on the machine
+	// TODO: create a list command to remotely show which versions are available
 	// Sample structure {"versions" : ["v1.14.3","v1.14.0"], "version_active": "v1.14.3","url_prefix": ...}
 }
