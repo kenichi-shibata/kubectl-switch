@@ -1,8 +1,10 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"net/http"
 	"os"
 	"runtime"
@@ -29,22 +31,27 @@ func seedData() *Configuration {
 func prefix() string {
 	//  check env var KUBECTL_PREFIX
 	prefix := os.Getenv("KUBECTL_PREFIX")
-	if prefix != "" {
+	if prefix == "" {
 		// check if ~/.kube/kubectl exists if not create it
-		_, err := createKubectlHome()
+		fmt.Println("creating ~/.kube/kubectl")
+		home, err := createKubectlHome()
 		if err != nil {
 			panic(err)
 		}
 		// if env var does not exists try to read from ~/.kube/kubectl/config
-		// config := fmt.Sprintf("%v/config", home)
-		// if _, err := os.Stat(config); os.IsNotExist(err) {
-		// 	configFile, err := os.Create(config)
-		// 	seed, _ := json.MarshalIndent(seedData(), "", " ")
-		// err := ioutil.WriteFile(config, seed, 0666)
-		// if err != nil {
-		// 	panic(err)
-		// }
-		// }
+		config := fmt.Sprintf("%v/config", home)
+		if _, err := os.Stat(config); os.IsNotExist(err) {
+			_, err := os.Create(config)
+			if err != nil {
+				panic(err)
+			}
+			seed, _ := json.MarshalIndent(seedData(), "", " ")
+			fmt.Println("writing file ~/.kube/kubectl/config")
+			noWriteErr := ioutil.WriteFile(config, seed, 0666)
+			if noWriteErr != nil {
+				panic(err)
+			}
+		}
 		// else if the config file is already exists don't try to recreate it but read it instead
 		// file, err := ioutil.ReadFile(fmt.Sprintf("%v/config"))
 	}
@@ -70,6 +77,7 @@ func createKubectlHome() (string, error) {
 }
 
 func buildURL() string {
+	fmt.Printf("%v/%v/bin/%v/%v/kubectl", prefix(), version(), runtime.GOOS, runtime.GOARCH)
 	return fmt.Sprintf("%v/%v/bin/%v/%v/kubectl", prefix(), version(), runtime.GOOS, runtime.GOARCH)
 }
 
