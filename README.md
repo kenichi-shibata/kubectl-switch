@@ -1,6 +1,16 @@
 # kube-env
 kubectl version switcher
 
+Why?
+-------
+
+Because Kubectl Version Skew https://kubernetes.io/docs/setup/version-skew-policy/
+
+
+What?
+-----
+Get an asciicinema here 
+
 Install 
 --------
 go get -u github.com/kenichi-shibata/kube-env
