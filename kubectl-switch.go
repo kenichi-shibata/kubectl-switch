@@ -73,13 +73,15 @@ func prefix() string {
 
 // This function returns a string of the version
 func version() string {
-	if len(os.Args) > 2 {
-		versionArgs := os.Args[2]
+	fmt.Println(os.Args)
+	if len(os.Args) > 1 {
+		versionArgs := os.Args[1]
 		return versionArgs // uses cmd line arguments
 	}
 	// TODO need to add input checker here
 	// TODO get the stable version here https://storage.googleapis.com/kubernetes-release/release/stable.txt
 	// TODO get the latest version here https://storage.googleapis.com/kubernetes-release/release/latest.txt
+	// TODO return stable version by default
 	return "v1.14.3"
 }
 
@@ -136,6 +138,13 @@ func downloadFile(filepath string, url string) error {
 
 // Wrapper for softlinking kubectl-vx.x.x to kubectl
 func softlinkKubectl(oldname, newname string) error {
+	if _, err := os.Lstat(newname); err == nil {
+		if err := os.Remove(newname); err != nil {
+			return fmt.Errorf("failed to unlink: %+v", err)
+		}
+	} else if os.IsNotExist(err) {
+		return fmt.Errorf("failed to check symlink: %+v", err)
+	}
 	err := os.Symlink(oldname, newname)
 	if err != nil {
 		return err
