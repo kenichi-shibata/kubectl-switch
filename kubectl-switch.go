@@ -10,12 +10,13 @@ import (
 	"runtime"
 )
 
-//  "Configuration": struct for kubectl version and prefix
+//  Struct for kubectl version and prefix
 type Configuration struct {
 	KubectlPrefix  string `json:"url_prefix"`
 	KubectlVersion string `json:"version"`
 }
 
+// Seed the initial config file ~/.kube/kubectl/config
 func seedData() Configuration {
 	data := Configuration{
 		KubectlPrefix:  "https://storage.googleapis.com/kubernetes-release/release",
@@ -55,20 +56,32 @@ func prefix() string {
 				panic(noWriteErr)
 			}
 		}
-		// else if the config file is already exists don't try to recreate it but read it instead
-		// file, err := ioutil.ReadFile(fmt.Sprintf("%v/config"))
+		fmt.Println("File ~/.kube/kubectl/config exists now reading it....")
+		// config file is already exists at this point (created above or already exists) read it now
+		configFile, err := ioutil.ReadFile(config)
+		data := Configuration{}
+		jsonErr := json.Unmarshal([]byte(configFile), &data)
+		if jsonErr != nil {
+			panic(jsonErr)
+		}
+		fmt.Println("Read URL Prefix: ", data.KubectlPrefix)
+		fmt.Println("Read version: ", data.KubectlVersion)
+		return data.KubectlPrefix
 	}
 	return "https://storage.googleapis.com/kubernetes-release/release"
 }
 
+// This function returns a string of the version
 func version() string {
 	return "v1.14.3" // change this to input from user
 }
 
-func versionFile(dir string) string {
-	return fmt.Sprintf("%v/kubectl-%v", dir, version())
+// Uses version() and home string to return the fullpath of the kubectl ex: ~/.kube/kubectl/kubectl-v1.14.3
+func versionFile(home string) string {
+	return fmt.Sprintf("%v/kubectl-%v", home, version())
 }
 
+// Creates the kubectl home dir in ~/.kube/kubectl returns this directory following $HOME
 func createKubectlHome() (string, error) {
 	// create directory
 	dir := fmt.Sprintf("%v/.kube/kubectl", os.Getenv("HOME"))
@@ -79,11 +92,14 @@ func createKubectlHome() (string, error) {
 	return dir, nil
 }
 
+// Builds the url where to download the binary from returns this url as string
+// for example https://storage.googleapis.com/kubernetes-release/release/v1.14.0/bin/linux/amd64/kubectl
 func buildURL() string {
 	fmt.Printf("%v/%v/bin/%v/%v/kubectl", prefix(), version(), runtime.GOOS, runtime.GOARCH)
 	return fmt.Sprintf("%v/%v/bin/%v/%v/kubectl", prefix(), version(), runtime.GOOS, runtime.GOARCH)
 }
 
+// Download a file given a filepath where to save it and a url where the file exists assumes a single file
 func downloadFile(filepath string, url string) error {
 
 	// Get the data
@@ -110,8 +126,20 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	fmt.Printf("\n ====== downloading kubectl ver: %v from %v", version(), buildURL())
+	fmt.Printf("\n ====== downloading kubectl ver: %v from %v ...", version(), buildURL())
 	if err := downloadFile(versionFile(dir), buildURL()); err != nil {
 		panic(err)
 	}
+	errMod := os.Chmod(versionFile(dir), 0700)
+	if errMod != nil {
+		panic(errMod)
+	}
+
+	fmt.Println("\nexport PATH=~/.kube/kubectl:$PATH")
+	fmt.Printf("Use kubectl-%v for execution", version())
+	// TODO: softlink the kubectl versions and then make the version into a list to keep changing the versions all we have to do it to change the link
+	// TODO: make this into a cobra cmd line
+	// TODO: Make version() read from the json file
+	// TODO: Annotate this using godoc
+	// Sample structure {"versions" : ["v1.14.3","v1.14.0"], "version_active": "v1.14.3","url_prefix": ...}
 }
