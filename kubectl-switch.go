@@ -12,14 +12,14 @@ import (
 
 //  "Configuration": struct for kubectl version and prefix
 type Configuration struct {
-	kubectlPrefix  string `json: "prefix"`
-	kubectlVersion string `json: "version"`
+	KubectlPrefix  string `json:"url_prefix"`
+	KubectlVersion string `json:"version"`
 }
 
-func seedData() *Configuration {
-	data := &Configuration{
-		kubectlPrefix:  "https://storage.googleapis.com/kubernetes-release/release",
-		kubectlVersion: "v1.14.3",
+func seedData() Configuration {
+	data := Configuration{
+		KubectlPrefix:  "https://storage.googleapis.com/kubernetes-release/release",
+		KubectlVersion: "v1.14.3",
 	}
 	return data
 }
@@ -45,11 +45,14 @@ func prefix() string {
 			if err != nil {
 				panic(err)
 			}
-			seed, _ := json.MarshalIndent(seedData(), "", " ")
+			seed, seedErr := json.MarshalIndent(seedData(), "", " ")
+			if seedErr != nil {
+				panic(seedErr)
+			}
 			fmt.Println("writing file ~/.kube/kubectl/config")
 			noWriteErr := ioutil.WriteFile(config, seed, 0666)
 			if noWriteErr != nil {
-				panic(err)
+				panic(noWriteErr)
 			}
 		}
 		// else if the config file is already exists don't try to recreate it but read it instead
