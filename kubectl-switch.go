@@ -73,12 +73,17 @@ func prefix() string {
 
 // This function returns a string of the version
 func version() string {
-	return "v1.14.3" // change this to input from user
+	return "v1.11.9" // change this to input from user
 }
 
 // Uses version() and home string to return the fullpath of the kubectl ex: ~/.kube/kubectl/kubectl-v1.14.3
 func versionFile(home string) string {
 	return fmt.Sprintf("%v/kubectl-%v", home, version())
+}
+
+// Returns the path of kubectl bin for softlinking string
+func kubectlFile(home string) string {
+	return fmt.Sprintf("%v/kubectl", home)
 }
 
 // Creates the kubectl home dir in ~/.kube/kubectl returns this directory following $HOME
@@ -119,25 +124,38 @@ func downloadFile(filepath string, url string) error {
 	// Write the body to file
 	_, err = io.Copy(out, resp.Body)
 	return err
+
+}
+
+// Wrapper for softlinking kubectl-vx.x.x to kubectl
+func softlinkKubectl(oldname, newname string) error {
+	err := os.Symlink(oldname, newname)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func main() {
-	dir, err := createKubectlHome()
+	home, err := createKubectlHome()
 	if err != nil {
 		panic(err)
 	}
 	fmt.Printf("\n ====== downloading kubectl ver: %v from %v ...", version(), buildURL())
-	if err := downloadFile(versionFile(dir), buildURL()); err != nil {
+	if err := downloadFile(versionFile(home), buildURL()); err != nil {
 		panic(err)
 	}
-	errMod := os.Chmod(versionFile(dir), 0700)
+	errMod := os.Chmod(versionFile(home), 0700)
 	if errMod != nil {
 		panic(errMod)
 	}
 
 	fmt.Println("\nexport PATH=~/.kube/kubectl:$PATH")
 	fmt.Printf("Use kubectl-%v for execution", version())
-	// TODO: softlink the kubectl versions and then make the version into a list to keep changing the versions all we have to do it to change the link
+	errSoftlink := softlinkKubectl(versionFile(home), kubectlFile(home))
+	if errSoftlink != nil {
+		panic(errSoftlink)
+	}
 	// TODO: make this into a cobra cmd line
 	// TODO: Make version() read from the json file
 	// TODO: Annotate this using godoc
