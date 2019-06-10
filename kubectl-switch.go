@@ -73,7 +73,14 @@ func prefix() string {
 
 // This function returns a string of the version
 func version() string {
-	return "v1.11.9" // change this to input from user
+	if len(os.Args) > 2 {
+		versionArgs := os.Args[2]
+		return versionArgs // uses cmd line arguments
+	}
+	// TODO need to add input checker here
+	// TODO get the stable version here https://storage.googleapis.com/kubernetes-release/release/stable.txt
+	// TODO get the latest version here https://storage.googleapis.com/kubernetes-release/release/latest.txt
+	return "v1.14.3"
 }
 
 // Uses version() and home string to return the fullpath of the kubectl ex: ~/.kube/kubectl/kubectl-v1.14.3
