@@ -140,16 +140,16 @@ func downloadFile(filepath string, url string) error {
 
 // Wrapper for softlinking kubectl-vx.x.x to kubectl
 func softlinkKubectl(oldname, newname string) error {
+	err := os.Symlink(oldname, newname)
+	if err != nil {
+		return err
+	}
 	if _, err := os.Lstat(newname); err == nil {
 		if err := os.Remove(newname); err != nil {
 			return fmt.Errorf("failed to unlink: %+v", err)
 		}
 	} else if os.IsNotExist(err) {
 		return fmt.Errorf("failed to check symlink: %+v", err)
-	}
-	err := os.Symlink(oldname, newname)
-	if err != nil {
-		return err
 	}
 	return nil
 }
@@ -179,5 +179,6 @@ func main() {
 	// TODO: create a list command to remotely show which versions are available
 	// TODO: create log-levels for debugging and warning
 	// TODO: create a progress bar
+	// TODO: create a dockerfile with kubectl and kubectl switchl
 	// Sample structure {"versions" : ["v1.14.3","v1.14.0"], "version_active": "v1.14.3","url_prefix": ...}
 }
