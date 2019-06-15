@@ -89,8 +89,8 @@ func version() string {
 }
 
 // Uses version() and home string to return the fullpath of the kubectl ex: ~/.kube/kubectl/kubectl-v1.14.3
-func versionFile(home string) string {
-	return fmt.Sprintf("%v/kubectl-%v", home, version())
+func versionFile(home, version string) string {
+	return fmt.Sprintf("%v/kubectl-%v", home, version)
 }
 
 // Returns the path of kubectl bin for softlinking string
@@ -156,20 +156,23 @@ func softlinkKubectl(oldname, newname string) error {
 
 func main() {
 	home, err := createKubectlHome()
+	version := version()
+	versionFile := versionFile(home, version)
+	url := buildURL()
 	if err != nil {
 		panic(err)
 	}
-	fmt.Printf("\n #### downloading kubectl ver: %v from %v ###", version(), buildURL())
-	if err := downloadFile(versionFile(home), buildURL()); err != nil {
+	fmt.Printf("\n #### downloading kubectl ver: %v from %v ###", version, url)
+	if err := downloadFile(versionFile, url); err != nil {
 		panic(err)
 	}
-	errMod := os.Chmod(versionFile(home), 0700)
+	errMod := os.Chmod(versionFile, 0700)
 	if errMod != nil {
 		panic(errMod)
 	}
 	fmt.Println("\n##### Export the new path below")
 	fmt.Println("\nexport PATH=~/.kube/kubectl:$PATH\n")
-	errSoftlink := softlinkKubectl(versionFile(home), kubectlFile(home))
+	errSoftlink := softlinkKubectl(versionFile, kubectlFile(home))
 	if errSoftlink != nil {
 		panic(errSoftlink)
 	}
