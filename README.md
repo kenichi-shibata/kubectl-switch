@@ -1,4 +1,4 @@
-# kube-env
+# kubectl-switch
 kubectl version switcher
 
 Why?
@@ -6,6 +6,9 @@ Why?
 
 Because Kubectl Version Skew https://kubernetes.io/docs/setup/version-skew-policy/
 
+If you work with two clusters with at least 2 minor versions apart then there will be functionalities that will be missing. You need to switch your version.
+
+Kubectl-Switch to the rescue
 
 What?
 -----
@@ -13,7 +16,7 @@ Get an asciicinema here
 
 Install 
 --------
-go get -u github.com/kenichi-shibata/kube-env
+go get -u github.com/kenichi-shibata/kubectl-switch
 
 Usage
 -------
@@ -22,7 +25,7 @@ go run kubectl-switch.go
 go run kubectl-switch.go #automatically changes version
 # list available versions
 ls ~/.kube/kubectl/
-
+```
 Config 
 -------
 
