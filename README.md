@@ -12,7 +12,7 @@ Kubectl-Switch to the rescue
 
 What?
 -----
-Get an asciicinema here 
+[![asciicast](https://asciinema.org/a/rNUZ5ywLkNdAXnj3GtQBlIvtf.svg)](https://asciinema.org/a/rNUZ5ywLkNdAXnj3GtQBlIvtf)
 
 Install 
 --------
@@ -21,8 +21,9 @@ go get -u github.com/kenichi-shibata/kubectl-switch
 Usage
 -------
 ```
-go run kubectl-switch.go
-go run kubectl-switch.go #automatically changes version
+# downloads v1.14.3 or -k <version> or from config file ~/.kube/kubectl/config
+kubectl-switch download 
+kubectl-switch -k v.1.11.9
 # list available versions
 ls ~/.kube/kubectl/
 ```
@@ -38,3 +39,6 @@ This creates a config file at `~/.kube/kubectl/config` if its not created alread
 }
 ```
 
+Alternatives
+------------
+* [asdf](https://asdf-vm.com/#/) with [kubectl-plugin](https://github.com/Banno/asdf-kubectl)

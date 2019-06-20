@@ -1,0 +1,4 @@
+{
+ "url_prefix": "https://storage.googleapis.com/kubernetes-release/release",
+ "version": "v1.13.0"
+}
