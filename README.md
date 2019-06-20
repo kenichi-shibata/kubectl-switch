@@ -12,7 +12,7 @@ Kubectl-Switch to the rescue
 
 What?
 -----
-
+[![asciicast](https://asciinema.org/a/rNUZ5ywLkNdAXnj3GtQBlIvtf.svg)](https://asciinema.org/a/rNUZ5ywLkNdAXnj3GtQBlIvtf)
 
 Install 
 --------
