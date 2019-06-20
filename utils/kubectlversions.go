@@ -3,13 +3,15 @@ package utils
 import "os"
 
 // StableVer returns the stable kubectl version from the txt file
+// TODO change this to fetch the stable version dynamically
 func StableVer() string {
 	return "v1.14.3"
 }
 
 // LatestVer returns the latest kubectl verion from the latest.txt
+// TODO change this to fetch the latest version dynamically
 func LatestVer() string {
-	return "v1.16.0-alpha"
+	return "v1.16.0-alpha.0"
 }
 
 // KubectlVersion returns the version either set by env var KUBECTL_VERSION

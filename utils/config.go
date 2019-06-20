@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"path/filepath"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -36,8 +37,32 @@ func initializeConfigFile() Configuration {
 	// log.Print("[DEBUG] File ~/.kube/kubectl/config exists now reading it....")
 	// config file is already exists at this point (created above or already exists) read it now
 	configFile, err := ioutil.ReadFile(config)
+	if err != nil {
+		log.Fatalf("Unable to get configFile:: %v", configFile)
+		panic(err)
+	}
 	data := Configuration{}
 	jsonErr := json.Unmarshal([]byte(configFile), &data)
+	if jsonErr != nil {
+		panic(jsonErr)
+	}
+	return data
+}
+
+// ReadConfig from a config flag 
+func ReadConfig(configFlag string) Configuration {
+	absPath, errPath := filepath.Abs(configFlag)
+	if errPath != nil {
+		log.Fatalf("abspath error %v", absPath)
+		panic(errPath)
+	}
+	log.Printf("[DEBUG] absPath:: %v ", absPath)
+	configFile, err := ioutil.ReadFile(absPath)
+	if err != nil {
+		panic(err)
+	}
+	data := Configuration{}
+	jsonErr := json.Unmarshal([]byte(configFile), &data)	
 	if jsonErr != nil {
 		panic(jsonErr)
 	}

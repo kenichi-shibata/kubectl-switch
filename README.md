@@ -38,3 +38,6 @@ This creates a config file at `~/.kube/kubectl/config` if its not created alread
 }
 ```
 
+Alternatives
+------------
+* [asdf](https://asdf-vm.com/#/) with [kubectl-plugin](https://github.com/Banno/asdf-kubectl)

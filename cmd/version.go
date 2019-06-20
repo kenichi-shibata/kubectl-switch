@@ -4,8 +4,9 @@ import (
 	"fmt"
 
 	"github.com/spf13/cobra"
-)
 
+)
+// Version kubectl-switch cli version
 var Version string
 
 func init() {
