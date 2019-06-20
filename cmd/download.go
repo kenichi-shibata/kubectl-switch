@@ -25,28 +25,28 @@ The version it will download will be from
 3. Config file: ~/.kube/kubectl/config
 `,
 	Run: func(cmd *cobra.Command, args []string) {
-				// Get the flags into variables start with log-level first
-				logLevel, errLogLevel := cmd.Flags().GetString("log-level")
-				// fmt.Printf("log-level:: %v", logLevel)
-				if errLogLevel != nil {
-					log.Print("[ERROR] ", errLogLevel)
-					panic(errLogLevel)
-				}
-				switch logLevel {
-				case "DEBUG":
-				case "WARN":
-				case "INFO":
-				case "ERROR":
-				default:
-					log.Fatal("Unknown log level")
-					panic(errors.New("Unknown Log Level"))
-				}
-				filter := &logutils.LevelFilter{
-					Levels:   []logutils.LogLevel{"DEBUG", "INFO", "WARN", "ERROR"},
-					MinLevel: logutils.LogLevel(logLevel), // this is where to set the log level
-					Writer:   os.Stderr,
-				}
-				log.SetOutput(filter)
+		// Get the flags into variables start with log-level first
+		logLevel, errLogLevel := cmd.Flags().GetString("log-level")
+		// fmt.Printf("log-level:: %v", logLevel)
+		if errLogLevel != nil {
+			log.Print("[ERROR] ", errLogLevel)
+			panic(errLogLevel)
+		}
+		switch logLevel {
+		case "DEBUG":
+		case "WARN":
+		case "INFO":
+		case "ERROR":
+		default:
+			log.Fatal("Unknown log level")
+			panic(errors.New("Unknown Log Level"))
+		}
+		filter := &logutils.LevelFilter{
+			Levels:   []logutils.LogLevel{"DEBUG", "INFO", "WARN", "ERROR"},
+			MinLevel: logutils.LogLevel(logLevel), // this is where to set the log level
+			Writer:   os.Stderr,
+		}
+		log.SetOutput(filter)
 
 
 		configFlag, errConfig := cmd.Flags().GetString("config")
