@@ -21,9 +21,9 @@ go get -u github.com/kenichi-shibata/kubectl-switch
 Usage
 -------
 ```
-go run kubectl-switch.go
-go run kubectl-switch.go #automatically changes version
-# list available versions
++# downloads v1.14.3 or -k <version> or from config file ~/.kube/kubectl/config
++kubectl-switch downloadzs 
++kubectl-switch -k v.1.11.9
 ls ~/.kube/kubectl/
 ```
 Config 
