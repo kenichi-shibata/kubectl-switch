@@ -41,6 +41,7 @@ func BuildFilepath(config *Configuration) string {
 	return fmt.Sprintf("%v/kubectl-%v", home, kubectlVersion)
 }
 
+// BuildFilepathKubectl creates the kubectlhome and returns it by default its ~/.kube/kubectl in most unix systems
 func BuildFilepathKubectl() string {
 	home, errCreateKubectlHome := CreateKubectlHome()
 	if errCreateKubectlHome != nil {
