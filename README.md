@@ -12,7 +12,7 @@ Kubectl-Switch to the rescue
 
 What?
 -----
-Get an asciicinema here 
+[![asciicast](https://asciinema.org/a/rNUZ5ywLkNdAXnj3GtQBlIvtf.svg)](https://asciinema.org/a/rNUZ5ywLkNdAXnj3GtQBlIvtf)
 
 Install 
 --------
@@ -21,9 +21,10 @@ go get -u github.com/kenichi-shibata/kubectl-switch
 Usage
 -------
 ```
-+# downloads v1.14.3 or -k <version> or from config file ~/.kube/kubectl/config
-+kubectl-switch downloadzs 
-+kubectl-switch -k v.1.11.9
+# downloads v1.14.3 or -k <version> or from config file ~/.kube/kubectl/config
+kubectl-switch download 
+kubectl-switch -k v.1.11.9
+# list available versions
 ls ~/.kube/kubectl/
 ```
 Config 

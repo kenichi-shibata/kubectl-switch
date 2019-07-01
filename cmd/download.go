@@ -86,7 +86,8 @@ The version it will download will be from
 		if errMod != nil {
 			panic(errMod)
 		}
-		fmt.Println("\n##### Export the new path below or add it in bashrc or bash_profile to make it permanentt")
+
+		fmt.Println("\n##### Export the new path below or add it in bashrc or bash_profile to make it permanent")
 		fmt.Println("\nexport PATH=~/.kube/kubectl:$PATH\n")
 		fmt.Println("kubectl version --client=true")
 
