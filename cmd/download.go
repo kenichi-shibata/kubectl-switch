@@ -1,11 +1,11 @@
 package cmd
 
 import (
-	"io"
 	"errors"
+	"fmt"
+	"io"
 	"log"
 	"net/http"
-	"fmt"
 	"os"
 
 	"github.com/hashicorp/logutils"
@@ -48,17 +48,33 @@ The version it will download will be from
 		}
 		log.SetOutput(filter)
 
-
+		versionFlag, errVersion := cmd.Flags().GetString("kubectl-version")
+		if errVersion != nil {
+			log.Print("[DEBUG] Could not get kubectl-version from flag trying in config")
+		}
 		configFlag, errConfig := cmd.Flags().GetString("config")
 		if errConfig != nil {
-			log.Print("[ERROR] ", errConfig)
-			panic(errConfig)
+			log.Print("[DEBUG] Did not find config File using default in ~/.kube/kubectl/config", errConfig)
 		}
-		log.Printf("[DEBUG] configFlag:: %v",configFlag)
 
+		log.Printf("[DEBUG] configFlag:: %v", configFlag)
 		config := utils.ReadConfig(configFlag)
-		url := utils.BuildURL(&config)
-		filepath := utils.BuildFilepath(&config)
+		kubectlVersion := utils.ParseKubectlVersion(versionFlag)
+
+		var url, filepath string
+
+		if len(kubectlVersion) > 0 {
+			log.Print("[DEBUG] kubectlVersion exists ignoring config")
+			kubectlConfig := config                       // copy the config parsed
+			kubectlConfig.KubectlVersion = kubectlVersion // change the value of version
+			url = utils.BuildURL(&kubectlConfig)
+			filepath = utils.BuildFilepath(&kubectlConfig)
+
+		} else {
+			url = utils.BuildURL(&config)
+			filepath = utils.BuildFilepath(&config)
+		}
+
 		filepathKubectl := utils.BuildFilepathKubectl()
 		log.Printf("[INFO] downloading:: \n %v \n %v ...\n", filepath, url)
 		err := downloadFile(filepath, url)
@@ -66,12 +82,11 @@ The version it will download will be from
 			log.Fatalf("Unable to download from %v to %v", url, filepath)
 			panic(err)
 		}
-
 		errMod := os.Chmod(filepath, 0700)
 		if errMod != nil {
 			panic(errMod)
 		}
-		fmt.Println("\n##### Export the new path below")
+		fmt.Println("\n##### Export the new path below or add it in bashrc or bash_profile to make it permanentt")
 		fmt.Println("\nexport PATH=~/.kube/kubectl:$PATH\n")
 		fmt.Println("kubectl version --client=true")
 
