@@ -88,7 +88,7 @@ The version it will download will be from
 		}
 
 		fmt.Println("\n##### Export the new path below or add it in bashrc or bash_profile to make it permanent")
-		fmt.Println("\nexport PATH=~/.kube/kubectl:$PATH\n")
+		fmt.Println("\nexport PATH=~/.kube/kubectl:$PATH")
 		fmt.Println("kubectl version --client=true")
 
 		errSoftlink := utils.SoftlinkKubectl(filepath, filepathKubectl)
