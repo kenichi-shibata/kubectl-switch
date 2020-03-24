@@ -27,7 +27,6 @@ The version it will download will be from
 	Run: func(cmd *cobra.Command, args []string) {
 		// Get the flags into variables start with log-level first
 		logLevel, errLogLevel := cmd.Flags().GetString("log-level")
-		// fmt.Printf("log-level:: %v", logLevel)
 		if errLogLevel != nil {
 			log.Print("[ERROR] ", errLogLevel)
 			panic(errLogLevel)
