@@ -18,8 +18,8 @@ var downloadCmd = &cobra.Command{
 	Use:   "download",
 	Short: "Downloads kubectl binary",
 	Long: `Downloads kubectl binary from prefix.
-Stores the binary in ~/.kube/kubectl/ 
-The version it will download will be from 
+Stores the binary in ~/.kube/kubectl/
+The version it will download will be from
 1. Command line flag either one: --stable --latest --kubectl-version
 2. Environment variable: KUBECTL_VERSION
 3. Config file: ~/.kube/kubectl/config
@@ -52,6 +52,7 @@ The version it will download will be from
 		if errVersion != nil {
 			log.Print("[DEBUG] Could not get kubectl-version from flag trying in config")
 		}
+
 		configFlag, errConfig := cmd.Flags().GetString("config")
 		if errConfig != nil {
 			log.Print("[DEBUG] Did not find config File using default in ~/.kube/kubectl/config", errConfig)

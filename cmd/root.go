@@ -23,7 +23,7 @@ func init() {
 	homedir := utils.Homedir()
 	cobra.OnInitialize()
 	rootCmd.PersistentFlags().StringP("config", "c", homedir+"/.kube/kubectl/config", "Where the config file is stored")
-	rootCmd.PersistentFlags().StringP("log-level", "", "DEBUG", "The log level of the application [INFO|ERROR|WARN|DEBUG]")
+	rootCmd.PersistentFlags().StringP("log-level", "", "INFO", "The log level of the application [INFO|ERROR|WARN|DEBUG]")
 }
 
 // Execute stuff
