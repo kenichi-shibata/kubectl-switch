@@ -52,6 +52,16 @@ The version it will download will be from
 			log.Print("[DEBUG] Could not get kubectl-version from flag trying in config")
 		}
 
+		stable, errVersion := cmd.Flags().GetBool("stable")
+		if errVersion != nil {
+			log.Print("[DEBUG] Trying stable")
+		}
+
+		latest, errVersion := cmd.Flags().GetBool("latest")
+		if errVersion != nil {
+			log.Print("[DEBUG] Trying Latest")
+		}
+
 		configFlag, errConfig := cmd.Flags().GetString("config")
 		if errConfig != nil {
 			log.Print("[DEBUG] Did not find config File using default in ~/.kube/kubectl/config", errConfig)
@@ -59,24 +69,48 @@ The version it will download will be from
 
 		log.Printf("[DEBUG] configFlag:: %v", configFlag)
 		config := utils.ReadConfig(configFlag)
-		kubectlVersion := utils.ParseKubectlVersion(versionFlag)
 
 		var url, filepath string
+		if len(versionFlag) > 0 {
 
-		if len(kubectlVersion) > 0 {
+			kubectlVersion, errKubectlVersion := utils.ParseKubectlVersion(versionFlag)
+			if errKubectlVersion != nil {
+				log.Fatal("[FATAL] Version not found")
+			}
+
+			log.Print("[INFO] Downloading from passed value")
 			log.Print("[DEBUG] kubectlVersion exists ignoring config")
 			kubectlConfig := config                       // copy the config parsed
 			kubectlConfig.KubectlVersion = kubectlVersion // change the value of version
 			url = utils.BuildURL(&kubectlConfig)
 			filepath = utils.BuildFilepath(&kubectlConfig)
 
+		} else if stable {
+
+			log.Print("[INFO] Downloading Stable")
+			kubectlConfig := config                          // copy the config parsed
+			kubectlConfig.KubectlVersion = utils.StableVer() // change the value of version
+			url = utils.BuildURL(&kubectlConfig)
+			filepath = utils.BuildFilepath(&kubectlConfig)
+
+		} else if latest {
+
+			log.Print("[INFO] Downloading Latest")
+			kubectlConfig := config                          // copy the config parsed
+			kubectlConfig.KubectlVersion = utils.LatestVer() // change the value of version
+			url = utils.BuildURL(&kubectlConfig)
+			filepath = utils.BuildFilepath(&kubectlConfig)
+
 		} else {
+
+			log.Print("[INFO] Downloading from config ~/.kube/kubectl/config")
 			url = utils.BuildURL(&config)
 			filepath = utils.BuildFilepath(&config)
 		}
 
 		filepathKubectl := utils.BuildFilepathKubectl()
 		log.Printf("[INFO] downloading:: \n %v \n %v ...\n", filepath, url)
+
 		err := downloadFile(filepath, url)
 		if err != nil {
 			log.Fatalf("Unable to download from %v to %v", url, filepath)
@@ -103,12 +137,11 @@ func init() {
 	// latest := utils.LatestVer()
 
 	prefix := utils.Prefix()
-	kubectlVersion := utils.KubectlVersion()
 	rootCmd.AddCommand(downloadCmd)
 	downloadCmd.Flags().BoolP("stable", "s", false, "use the stable version")
 	downloadCmd.Flags().BoolP("latest", "l", false, "use the latest version")
 	downloadCmd.Flags().StringP("prefix", "p", prefix, "Modify the prefix url where the binary will be downloaded from (Not needed most of the time)")
-	downloadCmd.Flags().StringP("kubectl-version", "k", kubectlVersion, "Kubectl version to switch to")
+	downloadCmd.Flags().StringP("kubectl-version", "k", "", "Kubectl version to switch to")
 }
 
 // Download a file given a filepath where to save it and a url where the file exists assumes a single file
