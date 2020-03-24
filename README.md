@@ -1,6 +1,18 @@
 # kubectl-switch
 kubectl version switcher
 
+Quickstart
+--------
+
+```
+$ go get -v -u github.com/kenichi-shibata/kubectl-switch/cmd
+$ kubectl-switch version
+v0.0.2
+$ kubectl-switch download -k v1.12.7 
+```
+
+
+
 Why?
 -------
 
