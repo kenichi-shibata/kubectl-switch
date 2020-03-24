@@ -14,7 +14,7 @@ What?
 -----
 [![asciicast](https://asciinema.org/a/rNUZ5ywLkNdAXnj3GtQBlIvtf.svg)](https://asciinema.org/a/rNUZ5ywLkNdAXnj3GtQBlIvtf)
 
-Install 
+Install
 --------
 
 ```
@@ -26,13 +26,12 @@ go build .
 Usage
 -------
 ```
-# downloads v1.14.3 or -k <version> or from config file ~/.kube/kubectl/config
-kubectl-switch download 
-kubectl-switch -k v.1.11.9
+kubectl-switch download # get the latest stable version
+kubectl-switch download -k v.1.11.9 # switch to verison v1.11.9
 # list available versions
 ls ~/.kube/kubectl/
 ```
-Config 
+Config
 -------
 
 This creates a config file at `~/.kube/kubectl/config` if its not created already. Otherwise it will read these values
@@ -44,6 +43,13 @@ This creates a config file at `~/.kube/kubectl/config` if its not created alread
 }
 ```
 
+The binares will created in `~/.kube/kubectl/` and the main symlink will be in `~/.kube/kubectl/kubectl` which will be symlinked to the active version.
+
 Alternatives
 ------------
 * [asdf](https://asdf-vm.com/#/) with [kubectl-plugin](https://github.com/Banno/asdf-kubectl)
+
+Generate Supported Versions
+--------------
+
+curl -s https://api.github.com/repos/kubernetes/kubernetes/releases?per_page=100 | jq .[].Name > supported_versions
