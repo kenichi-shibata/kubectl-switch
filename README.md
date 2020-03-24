@@ -16,7 +16,12 @@ What?
 
 Install
 --------
-go get -u github.com/kenichi-shibata/kubectl-switch
+
+```
+git clone git@github.com:kenichi-shibata/kubectl-switch
+go build . 
+./kubectl-switch 
+```
 
 Usage
 -------
