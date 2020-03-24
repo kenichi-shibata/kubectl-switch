@@ -2,7 +2,6 @@ package utils
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -10,18 +9,19 @@ import (
 	"time"
 )
 
-type githubKubernetesVersion struct {
+type GithubKubernetesVersion struct {
 	Version string `json:"tag_name"`
 }
 
-func (g *githubKubernetesVersion) String() string {
+// method for data unmarshaled using GithubKubernetesVersion struct
+func (g *GithubKubernetesVersion) String() string {
 	return g.Version
 }
 
+// add a default timeout for http.Client
 var httpClient = &http.Client{Timeout: 10 * time.Second}
 
-// StableVer returns the stable kubectl version from the txt file
-// TODO change this to fetch the stable version dynamically
+// StableVer returns the stable kubectl version from github
 func StableVer() string {
 	resp, err := httpClient.Get("https://api.github.com/repos/kubernetes/kubernetes/releases/latest")
 	if err != nil {
@@ -34,20 +34,37 @@ func StableVer() string {
 		log.Fatal(ioerr)
 	}
 
-	version := githubKubernetesVersion{}
+	version := GithubKubernetesVersion{}
 	jsonErr := json.Unmarshal(body, &version)
 	if jsonErr != nil {
 		log.Fatal(jsonErr)
 	}
 
-	fmt.Println(version.String())
 	return version.String()
 }
 
-// LatestVer returns the latest kubectl verion from the latest.txt
-// TODO change this to fetch the latest version dynamically
+// LatestVer returns the latest kubectl verion from github (including the pre release)
 func LatestVer() string {
-	return "v1.16.0-alpha.0"
+	resp, err := httpClient.Get("https://api.github.com/repos/kubernetes/kubernetes/releases?per_page=1")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer resp.Body.Close()
+
+	body, ioerr := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		log.Fatal(ioerr)
+	}
+
+	// create array of the struct above and use that to unmarshal
+	var arr []GithubKubernetesVersion
+	jsonErr := json.Unmarshal(body, &arr)
+	if jsonErr != nil {
+		log.Fatal(jsonErr)
+	}
+
+	// use the struct method String() defined above
+	return arr[0].String()
 }
 
 // KubectlVersion returns the version either set by env var KUBECTL_VERSION

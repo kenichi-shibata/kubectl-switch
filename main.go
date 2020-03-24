@@ -8,5 +8,5 @@ var Version = "v0.0.2"
 func main() {
 	// cmd.Version = Version
 	// cmd.Execute()
-	utils.StableVer()
+	utils.LatestVer()
 }
