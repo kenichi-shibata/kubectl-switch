@@ -8,7 +8,9 @@ Quickstart
 $ go get -v -u github.com/kenichi-shibata/kubectl-switch/cmd
 $ kubectl-switch version
 v0.0.2
-$ kubectl-switch download -k v1.12.7 
+$ kubectl-switch download -k v1.15.11
+$ kubectl version --client # to verify
+
 ```
 
 
@@ -31,8 +33,8 @@ Install
 
 ```
 git clone git@github.com:kenichi-shibata/kubectl-switch
-go build . 
-./kubectl-switch 
+go build .
+./kubectl-switch
 ```
 
 Usage
@@ -63,5 +65,10 @@ Alternatives
 
 Generate Supported Versions
 --------------
-
+```
 curl -s https://api.github.com/repos/kubernetes/kubernetes/releases?per_page=100 | jq .[].Name > supported_versions
+```
+
+List of all supported versions
+
+https://raw.githubusercontent.com/kenichi-shibata/kubectl-switch/master/supported_versions
