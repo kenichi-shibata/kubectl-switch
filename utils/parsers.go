@@ -2,34 +2,40 @@ package utils
 
 import (
 	"bufio"
+	"bytes"
 	"errors"
-	"os"
-	"path/filepath"
+	"fmt"
+	"io/ioutil"
+	"log"
 )
 
+// Get all the supported version from a file in github https://raw.githubusercontent.com/kenichi-shibata/kubectl-switch/master/supported_versions this file is generated beforehand via a curl command
 func ParseKubectlVersion(kubectlVersion string) (string, error) {
-	// add a regex here for v<int>.<int>.<int>
-	path, errAbs := filepath.Abs("supported_versions")
-	if errAbs != nil {
-		panic(errAbs)
-	}
-
-	file, err := os.Open(path)
+	resp, err := httpClient.Get("https://raw.githubusercontent.com/kenichi-shibata/kubectl-switch/master/supported_versions")
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
+	defer resp.Body.Close()
 
-	defer file.Close()
+	body, ioerr := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		log.Fatal(ioerr)
+	}
 
 	supported := false
-	scanner := bufio.NewScanner(file)
+	reader := bytes.NewReader(body)
+	scanner := bufio.NewScanner(reader)
+	fmt.Println("it reached prescanner")
 	for scanner.Scan() {
-		// fmt.Println("===", kubectlVersion, "?", scanner.Text())
+		fmt.Println("===", kubectlVersion, "?", scanner.Text())
 		if kubectlVersion == scanner.Text() {
 			supported = true
 		}
 	}
-	// fmt.Println(kubectlVersion, "supported : ", supported)
+	if scanner.Err() != nil {
+		fmt.Printf(" > Failed!: %v\n", scanner.Err())
+	}
+	fmt.Println(kubectlVersion, "supported : ", supported)
 	if supported {
 		return kubectlVersion, nil
 	} else {
