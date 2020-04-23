@@ -9,6 +9,7 @@ import (
 	"os"
 
 	"github.com/hashicorp/logutils"
+	"github.com/kenichi-shibata/kubectl-switch/pkg"
 	"github.com/spf13/cobra"
 )
 
