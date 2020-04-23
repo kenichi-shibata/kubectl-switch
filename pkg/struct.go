@@ -1,4 +1,4 @@
-package utils
+package pkg
 
 // Configuration Struct for kubectl version and prefix
 type Configuration struct {

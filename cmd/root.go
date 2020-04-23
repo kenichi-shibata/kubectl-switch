@@ -4,7 +4,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/kenichi-shibata/kubectl-switch/utils"
+	"github.com/kenichi-shibata/kubectl-switch/pkg"
 	"github.com/spf13/cobra"
 )
 
@@ -20,7 +20,7 @@ You will need to export this to PATH.`,
 }
 
 func init() {
-	homedir := utils.Homedir()
+	homedir := pkg.Homedir()
 	cobra.OnInitialize()
 	rootCmd.PersistentFlags().StringP("config", "c", homedir+"/.kube/kubectl/config", "Where the config file is stored")
 	rootCmd.PersistentFlags().StringP("log-level", "", "INFO", "The log level of the application [INFO|ERROR|WARN|DEBUG]")
