@@ -25,9 +25,9 @@ func ParseKubectlVersion(kubectlVersion string) (string, error) {
 	supported := false
 	reader := bytes.NewReader(body)
 	scanner := bufio.NewScanner(reader)
-	fmt.Println("it reached prescanner")
+	// fmt.Println("it reached prescanner")
 	for scanner.Scan() {
-		fmt.Println("===", kubectlVersion, "?", scanner.Text())
+		// fmt.Println("===", kubectlVersion, "?", scanner.Text())
 		if kubectlVersion == scanner.Text() {
 			supported = true
 		}
