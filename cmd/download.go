@@ -9,7 +9,6 @@ import (
 	"os"
 
 	"github.com/hashicorp/logutils"
-	"github.com/kenichi-shibata/kubectl-switch/utils"
 	"github.com/spf13/cobra"
 )
 
@@ -68,12 +67,12 @@ The version it will download will be from
 		}
 
 		log.Printf("[DEBUG] configFlag:: %v", configFlag)
-		config := utils.ReadConfig(configFlag)
+		config := pkg.ReadConfig(configFlag)
 
 		var url, filepath string
 		if len(versionFlag) > 0 {
 
-			kubectlVersion, errKubectlVersion := utils.ParseKubectlVersion(versionFlag)
+			kubectlVersion, errKubectlVersion := pkg.ParseKubectlVersion(versionFlag)
 			if errKubectlVersion != nil {
 				log.Fatal("[FATAL] Version not found")
 			}
@@ -82,33 +81,33 @@ The version it will download will be from
 			log.Print("[DEBUG] kubectlVersion exists ignoring config")
 			kubectlConfig := config                       // copy the config parsed
 			kubectlConfig.KubectlVersion = kubectlVersion // change the value of version
-			url = utils.BuildURL(&kubectlConfig)
-			filepath = utils.BuildFilepath(&kubectlConfig)
+			url = pkg.BuildURL(&kubectlConfig)
+			filepath = pkg.BuildFilepath(&kubectlConfig)
 
 		} else if stable {
 
 			log.Print("[INFO] Downloading Stable")
-			kubectlConfig := config                          // copy the config parsed
-			kubectlConfig.KubectlVersion = utils.StableVer() // change the value of version
-			url = utils.BuildURL(&kubectlConfig)
-			filepath = utils.BuildFilepath(&kubectlConfig)
+			kubectlConfig := config                        // copy the config parsed
+			kubectlConfig.KubectlVersion = pkg.StableVer() // change the value of version
+			url = pkg.BuildURL(&kubectlConfig)
+			filepath = pkg.BuildFilepath(&kubectlConfig)
 
 		} else if latest {
 
 			log.Print("[INFO] Downloading Latest")
-			kubectlConfig := config                          // copy the config parsed
-			kubectlConfig.KubectlVersion = utils.LatestVer() // change the value of version
-			url = utils.BuildURL(&kubectlConfig)
-			filepath = utils.BuildFilepath(&kubectlConfig)
+			kubectlConfig := config                        // copy the config parsed
+			kubectlConfig.KubectlVersion = pkg.LatestVer() // change the value of version
+			url = pkg.BuildURL(&kubectlConfig)
+			filepath = pkg.BuildFilepath(&kubectlConfig)
 
 		} else {
 
 			log.Print("[INFO] Downloading from config ~/.kube/kubectl/config")
-			url = utils.BuildURL(&config)
-			filepath = utils.BuildFilepath(&config)
+			url = pkg.BuildURL(&config)
+			filepath = pkg.BuildFilepath(&config)
 		}
 
-		filepathKubectl := utils.BuildFilepathKubectl()
+		filepathKubectl := pkg.BuildFilepathKubectl()
 		log.Printf("[INFO] downloading:: \n %v \n %v ...\n", filepath, url)
 
 		err := downloadFile(filepath, url)
@@ -125,7 +124,7 @@ The version it will download will be from
 		fmt.Println("\nexport PATH=~/.kube/kubectl:$PATH")
 		fmt.Println("kubectl version --client=true")
 
-		errSoftlink := utils.SoftlinkKubectl(filepath, filepathKubectl)
+		errSoftlink := pkg.SoftlinkKubectl(filepath, filepathKubectl)
 		if errSoftlink != nil {
 			panic(errSoftlink)
 		}
@@ -136,7 +135,7 @@ func init() {
 	// stable := utils.StableVer()
 	// latest := utils.LatestVer()
 
-	prefix := utils.Prefix()
+	prefix := pkg.Prefix()
 	rootCmd.AddCommand(downloadCmd)
 	downloadCmd.Flags().BoolP("stable", "s", false, "use the stable version")
 	downloadCmd.Flags().BoolP("latest", "l", false, "use the latest version")

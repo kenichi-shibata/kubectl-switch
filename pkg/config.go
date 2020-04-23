@@ -1,12 +1,12 @@
-package utils
+package pkg
 
 import (
-	"path/filepath"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"log"
 	"os"
+	"path/filepath"
 )
 
 // initializeConfigFile initializes the config file if it does not exists and then seeds it with SeedConfig
@@ -49,7 +49,7 @@ func initializeConfigFile() Configuration {
 	return data
 }
 
-// ReadConfig from a config flag 
+// ReadConfig from a config flag
 func ReadConfig(configFlag string) Configuration {
 	absPath, errPath := filepath.Abs(configFlag)
 	if errPath != nil {
@@ -62,7 +62,7 @@ func ReadConfig(configFlag string) Configuration {
 		panic(err)
 	}
 	data := Configuration{}
-	jsonErr := json.Unmarshal([]byte(configFile), &data)	
+	jsonErr := json.Unmarshal([]byte(configFile), &data)
 	if jsonErr != nil {
 		panic(jsonErr)
 	}

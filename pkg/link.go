@@ -1,9 +1,10 @@
-package utils
+package pkg
 
 import (
 	"fmt"
 	"os"
 )
+
 // Wrapper for softlinking kubectl-vx.x.x to kubectl
 func SoftlinkKubectl(kubectlVersion, kubectl string) error {
 	if _, err := os.Lstat(kubectl); err == nil {
