@@ -5,9 +5,9 @@ Quickstart
 --------
 
 ```
-$ go get -v -u github.com/kenichi-shibata/kubectl-switch/cmd
+$ go get -v -u github.com/kenichi-shibata/kubectl-switch/
 $ kubectl-switch version
-v0.0.2
+v0.0.2-hotfix
 $ kubectl-switch download -k v1.15.11
 $ export PATH=~/.kube/kubectl:$PATH # you might want to add this in your bashrc or zshrc
 $ kubectl version --client # to verify
